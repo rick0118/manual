@@ -1,0 +1,2 @@
+* Create the "Hello BMC" systemd service in openbmc, which prints out "Hello BMC" via shell script, and use the systemctl command to check the status of the service and restart it.
+* Executing the "Hello BMC" systemd service before systemd-networkd.service.

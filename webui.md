@@ -1,0 +1,1 @@
+/home/rick/openbmc/build/romulus/workspace/sources/webui-vue/src/layouts

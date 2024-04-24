@@ -1,14 +1,8 @@
-# Using devtool
+# state-Mnager using devtool
 [Yocto documentation](https://docs.yoctoproject.org/ref-manual/system-requirements.html#required-packages-for-the-build-host)
 ## Clone and Build a Repo
 
-devtool is a command line tool provided by the yocto distribution that allows
-you to extract a targeted repositories source code into your local bitbake
-environment and modify it.
-
-Today we'll be extracting the
-[phosphor-state-manager](https://github.com/openbmc/phosphor-state-manager.git)
-repository using devtool and modifying it.
+Today we'll be extracting the [phosphor-state-manager](https://github.com/openbmc/phosphor-state-manager.git) repository using devtool and modifying it.
 
 This assumes you have followed the first tutorial and are in the bitbake
 environment, right after doing the ". setup" command.
@@ -53,8 +47,7 @@ environment, right after doing the ". setup" command.
    bitbake obmc-phosphor-image
    ```
 
-   Follow the steps in the first tutorial to load your new image into a QEMU
-   session and boot it up.
+   Load your new image into a QEMU session and boot it up.
 
 4. Confirm your "Hello World" made it into the new image
 
@@ -70,10 +63,9 @@ environment, right after doing the ". setup" command.
    <date> romulus phosphor-bmc-state-manager[1089]: Hello World
    ```
 
-You made a change, rebuilt the flash image to contain that change, and then
-booted that image up and verified the change made it in!
-
-## Loading an Application Directly Into a Running QEMU
+* **You made a change, rebuilt the flash image to contain that change, and then
+booted that image up and verified the change made it in!**
+* **We have another way to do loading an Application Directly Into a Running QEMU**
 
 In this section we're going to modify the same source file, but instead of fully
 re-generating the flash image and booting QEMU again, we're going to just build
@@ -149,7 +141,7 @@ the required binary and copy it into the running QEMU session and launch it.
    journalctl | tail
    ```
 
-### Use overlay to test New Applications
+#### Use overlay to test New Applications (second)
    3. Create a safe file system for your application
 
    Now is time to load your Hello World application in to QEMU virtual hardware.
@@ -170,5 +162,32 @@ the required binary and copy it into the running QEMU session and launch it.
    mount -t overlay -o lowerdir=/usr,upperdir=/tmp/persist/usr,workdir=/tmp/persist/work/usr overlay /usr
    ```
 
-   #### workflow
-   https://amboar.github.io/notes/2022/01/13/openbmc-development-workflow.html
+   ## workflow
+  O**n the development machine, build a base image on which we’ll test our work**
+
+ ```
+cd ~/src/openbmc/openbmc
+. setup p10bmc
+bitbake obmc-phosphor-image
+```
+
+**On the development machine, set up a repository to work on**
+ ```
+cd ~/src/openbmc
+git clone https://github.com/openbmc/dbus-sensors.git
+cd dbus-sensors
+git checkout -b my-hacks
+vi src/NVMeSensorMain.cpp
+git commit -a -m "my hacks"
+ ```
+
+**On the development machine, configure and build our modified application**
+
+```
+devtool modify dbus-sensors
+cd ~/src/openbmc/openbmc/build/p10bmc/workspace/sources/dbus-sensors
+git remote add local ~/src/openbmc/dbus-sensors
+git fetch local my-hacks && git merge FETCH_HEAD
+devtool build dbus-sensors
+```
+[workflow](https://amboar.github.io/notes/2022/01/13/openbmc-development-workflow.html)

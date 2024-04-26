@@ -34,12 +34,13 @@ devtool build webui-vue
 caus the code is zip, if we want to modify use patch!
 
 ```git
-git -m "[ADD]modify,Logo Change" src/layouts/LoginLayout.vue
-git -m "[ADD]modify,Logo Change" src/assets/images/logo.png
+git commit  -m "[ADD]modify,Logo Change" sources/webui-vue/src/layouts/LoginLayout.vue
+git commit  -m "[ADD]modify,Logo Change"  sources/webui-vue/src/assets/images/login-company-logo.svg
+
 ```
 use devtool update-recipe and store in ur layer
-```
-devtool update-recipe webui-vue
+```shbit
+devtool update-recipe webui-vue -a /target dir/
 ```
 if you use romulus, try to tree recipes-phosphor
 ```

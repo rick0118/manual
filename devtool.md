@@ -1,4 +1,4 @@
-# state-Mnager using devtool
+# devtool modify recipe
 [Yocto documentation](https://docs.yoctoproject.org/ref-manual/system-requirements.html#required-packages-for-the-build-host)
 ## Clone and Build a Repo
 
@@ -63,9 +63,7 @@ environment, right after doing the ". setup" command.
    <date> romulus phosphor-bmc-state-manager[1089]: Hello World
    ```
 
-* **You made a change, rebuilt the flash image to contain that change, and then
-booted that image up and verified the change made it in!**
-* **We have another way to do loading an Application Directly Into a Running QEMU**
+
 
 In this section we're going to modify the same source file, but instead of fully
 re-generating the flash image and booting QEMU again, we're going to just build
@@ -107,6 +105,9 @@ the required binary and copy it into the running QEMU session and launch it.
 
 ## Run the Application in QEMU
 
+ ```
+ qemu-system-arm -m 256 -M romulus-bmc -nographic -drive file=./obmc-phosphor-image-romulus.static.mtd,format=raw,if=mtd -net nic -net user,hostfwd=:10.32.49.218:2222-:22,hostfwd=:10.32.49.218:2443-:443,hostfwd=udp:127.0.0.1:2623-:623,hostname=qemu 
+ ```
 1. Stop the BMC state manager service
 
    ```
@@ -119,23 +120,15 @@ the required binary and copy it into the running QEMU session and launch it.
    phosphor-bmc-state-manager
    ```
 
-   You'll see your "Hello World Again" message displayed. Ctrl^C to end that
-   application. In general, this is not how you will test new applications.
-   Instead, you'll be using systemd services.
 
 3. Start application via systemd service
 
-   OpenBMC uses systemd to manage its applications. There will be later
-   tutorials on this, but for now just run the following to restart the BMC
-   state service and have it pick up your new application:
-
+   
    ```
    systemctl restart xyz.openbmc_project.State.BMC.service
    ```
 
-   Since systemd started your service, the "Hello World Again" will not be
-   output to the console, but it will be in the journal. Later tutorials will
-   discuss the journal but for now just run:
+  
 
    ```
    journalctl | tail
